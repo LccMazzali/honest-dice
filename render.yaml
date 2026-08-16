@@ -1,0 +1,22 @@
+# ============================================================================
+# render.yaml — Honest Dice Bot (Render Blueprint)
+# Deploy: New Blueprint -> conectar este repo -> preencher DISCORD_BOT_TOKEN
+#
+# POR QUE "worker" e não "web service":
+#   No plano gratuito do Render, Web Services dormem após 15 min sem
+#   acessos HTTP. Background Workers NÃO dormem -> bot 24/7 mesmo no Free.
+# ============================================================================
+services:
+  - type: worker
+    name: honest-dice-bot
+    runtime: docker
+    repo: https://github.com/SEU_USUARIO/honest-dice
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DISCORD_BOT_TOKEN
+        sync: false # vazio no blueprint; você preenche no painel do Render
+      - key: LOG_LEVEL
+        value: INFO
+      - key: LOG_FILE
+        value: /app/data/honest_dice.log

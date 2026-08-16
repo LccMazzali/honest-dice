@@ -1,0 +1,1 @@
+# Honest Dice — cryptographic module
