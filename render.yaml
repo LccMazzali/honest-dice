@@ -12,7 +12,6 @@ services:
     runtime: docker
     repo: https://github.com/SEU_USUARIO/honest-dice
     plan: free
-    healthCheckPath: /
     envVars:
       - key: DISCORD_BOT_TOKEN
         sync: false # vazio no blueprint; você preenche no painel do Render
