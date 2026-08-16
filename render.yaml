@@ -10,7 +10,7 @@ services:
   - type: worker
     name: honest-dice-bot
     runtime: docker
-    repo: https://github.com/SEU_USUARIO/honest-dice
+    repo: https://github.com/LccMazzali/honest-dice
     plan: free
     envVars:
       - key: DISCORD_BOT_TOKEN
