@@ -53,10 +53,10 @@ render.yaml      Render blueprint
 
 ## 🔗 Useful Links
 
-- 🌐 Web app: [honest-dice.higgsfield.app](https://honest-dice.higgsfield.app)
-- 📊 Provably Fair dice — verify in your browser: `/verify`
-- 💬 Discord Developer Portal (bot token): https://discord.com/developers/applications
-- Bot invite: `https://discord.com/api/oauth2/authorize?client_id=1530349265216475247&scope=bot+applications.commands`
+|- 🌐 Web app: [honest-dice.higgsfield.app](https://honest-dice.higgsfield.app)
+|- 📊 Provably Fair dice — verify in your browser: `/verify`
+|- 💬 Discord Developer Portal (bot token): https://discord.com/developers/applications
+|- Bot invite: `https://discord.com/api/oauth2/authorize?client_id=1530349265216475247&scope=bot+applications.commands`
 
 ---
 
