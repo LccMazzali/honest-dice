@@ -37,7 +37,6 @@ The bot serves `GET /health` (port `$PORT`) so free uptime monitors keep it awak
 
 ## Run locally
 
-```bash
 pip install -r requirements.txt
 export DISCORD_BOT_TOKEN="your_token"
 python main.py
