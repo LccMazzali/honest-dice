@@ -5,16 +5,24 @@ PONTO DE ENTRADA — Honest Dice Bot
 """
 
 VERSION = "2.0.0"
+
 """Versao atual do Honest Dice Bot."""
 
 import logging
 import os
 import sys
+import asyncio
 import discord
 from discord.ext import commands
 
 from crypto.state import load_state, get_state
 from bot.commands import HonestDiceCommands
+
+# aiohttp: vem junto com discord.py (sem dependencia extra)
+try:
+    from aiohttp import web
+except ImportError:
+    web = None
 
 # ---------------------------------------------------------------------------
 # Logging estruturado
@@ -92,10 +100,49 @@ class HonestDiceBot(commands.Bot):
 
 
 # ---------------------------------------------------------------------------
+# Servidor HTTP de saude (Render Free: Web Service precisa responder HTTP)
+# UptimeRobot (gratuito) faz ping a cada 5 min -> o servico nunca dorme.
+# URL: /health  ->  {"ok":true}
+# ---------------------------------------------------------------------------
+
+async def _health_handler(request):
+    return web.json_response({"ok": True, "bot": "honest-dice"})
+
+
+async def run_http_server(_bot=None):
+    """Sobe um mini servidor aiohttp na porta $PORT (3000 default)."""
+    if web is None:
+        log.warning("aiohttp indisponivel — servidor HTTP de saude desligado")
+        return
+    app = web.Application()
+    app.router.add_get("/", _health_handler)
+    app.router.add_get("/health", _health_handler)
+    app.router.add_get("/healthz", _health_handler)
+    port = int(os.environ.get("PORT", "3000"))
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    log.info("Servidor HTTP de saude ativo na porta %d (/health)", port)
+
+
+async def _main():
+    """Roda o bot do Discord + servidor HTTP de saude em paralelo."""
+    log.info("Iniciando Honest Dice...")
+    bot = HonestDiceBot()
+    try:
+        await run_http_server(bot)
+    except Exception as e:  # nunca deixar o bot cair por causa do healthcheck
+        log.warning("Servidor de saude falhou (bot segue normal): %s", e)
+    await bot.start(BOT_TOKEN)
+
+
+# ---------------------------------------------------------------------------
 # Ponto de entrada
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    log.info("Iniciando Honest Dice...")
-    bot = HonestDiceBot()
-    bot.run(BOT_TOKEN, log_handler=None)
+    try:
+        asyncio.run(_main())
+    except KeyboardInterrupt:
+        log.info("Encerrado pelo usuario.")
